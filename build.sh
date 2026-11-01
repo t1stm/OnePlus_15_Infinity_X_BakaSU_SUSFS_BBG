@@ -21,7 +21,8 @@ KERNEL_PICKS=${KERNEL_PICKS:-a5cc8e8e8f5f f0dcc8d6d11a 2217b5807c39}
 BAKASU_REF=${BAKASU_REF:-custom}                  # github.com/LDLDL-Android/BakaSU
 BBG_REF=${BBG_REF:-main}                          # github.com/vc-teahouse/Baseband-guard (branch or tag)
 PATCHES_REF=${PATCHES_REF:-c78291aeb0dca025f21e6b197e0aa4fde42e065d} # github.com/WildKernels/kernel_patches
-AK3_REF=${AK3_REF:-41f04bdb4ee30a44e429c2c1131d5e8bb32b15f1} # github.com/osm0sis/AnyKernel3
+# WildKernels fork: same AK3 core, but arm64 tools (SM8850 has no 32-bit support).
+AK3_REF=${AK3_REF:-0b46673ae91aee8d60bd6ee257b4d56d3f6a0114} # github.com/WildKernels/AnyKernel3
 # Droidspaces (SYSVIPC, POSIX_MQUEUE, USER_NS, PID_NS...). C symbol CRCs stay identical,
 # but the Rust ones change, so the ROM's system_dlkm rust_binder.ko will not load. Harmless
 # unless binder.impl=rust is on the cmdline (C binder is used otherwise). false = leave it out.
@@ -176,9 +177,10 @@ echo "==> Package"
 KVER=$(grep -a -m1 -oP 'Linux version \K\S+' dist/Image)
 NAME="OP15-InfinityX-BakaSU-SUSFS-BBG-$KVER"
 rm -rf ak3
-git clone -q https://github.com/osm0sis/AnyKernel3 ak3
-git -C ak3 checkout -q "$AK3_REF"
-rm -rf ak3/.git ak3/.github ak3/README.md ak3/modules ak3/patch ak3/ramdisk
+git init -q ak3
+git -C ak3 fetch -q --depth=1 https://github.com/WildKernels/AnyKernel3 "$AK3_REF"
+git -C ak3 checkout -q FETCH_HEAD
+rm -rf ak3/.git ak3/.github ak3/README.md ak3/modules ak3/patch ak3/ramdisk ak3/banner
 cat > ak3/anykernel.sh <<EOF
 ### AnyKernel3 Ramdisk Mod Script
 properties() { '

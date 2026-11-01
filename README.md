@@ -10,7 +10,7 @@ GKI kernel for the OnePlus 15 (infiniti) on Infinity-X 4.1 (Android 17). Built b
 - [simonpunk/susfs4ksu](https://gitlab.com/simonpunk/susfs4ksu), `gki-android16-6.12` (v2.3.0, ported by LDLDL)
 - [vc-teahouse/Baseband-guard](https://github.com/vc-teahouse/Baseband-guard), branch `main`
 - [WildKernels/kernel_patches](https://github.com/WildKernels/kernel_patches) at `c78291aeb0dc`
-- [osm0sis/AnyKernel3](https://github.com/osm0sis/AnyKernel3) at `41f04bdb4ee3`
+- [WildKernels/AnyKernel3](https://github.com/WildKernels/AnyKernel3) at `0b46673ae91a` (fork of [osm0sis/AnyKernel3](https://github.com/osm0sis/AnyKernel3) with arm64 tools)
 
 ## Included patches
 
