@@ -1,0 +1,53 @@
+name: Build kernel
+
+on:
+  workflow_dispatch:
+    inputs:
+      kernel_ref:
+        description: LDLDL-Android/android_kernel_common branch, tag or commit
+        default: android16-6.12-infiniti
+      kernel_base:
+        description: ACK commit the ROM's kernel was built from (uname -r shows it as -g<sha>); empty = use kernel_ref as is
+        default: 6b467619429a3e09812e862ad19b65a9910397ed
+      bakasu_ref:
+        description: LDLDL-Android/BakaSU branch, tag or commit
+        default: custom
+      bbg_ref:
+        description: vc-teahouse/Baseband-guard branch or tag
+        default: main
+      droidspaces:
+        description: Droidspaces (SYSVIPC etc.); the ROM's rust_binder.ko then won't load (unused unless binder.impl=rust)
+        type: boolean
+        default: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+
+      # The ACK tree plus Bazel output needs about 60 GB; the runner starts with about 20 GB free.
+      - name: Free disk space
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache /usr/local/share/boost || true
+          df -h /
+
+      - name: Install tools
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -yq repo zip
+
+      - name: Build
+        env:
+          KERNEL_REF: ${{ inputs.kernel_ref }}
+          KERNEL_BASE: ${{ inputs.kernel_base }}
+          BAKASU_REF: ${{ inputs.bakasu_ref }}
+          BBG_REF: ${{ inputs.bbg_ref }}
+          DROIDSPACES: ${{ inputs.droidspaces }}
+        run: ./build.sh
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: kernel-${{ github.run_number }}
+          path: out/
