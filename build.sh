@@ -189,6 +189,7 @@ do.systemless=0
 do.cleanup=1
 do.cleanuponabort=0
 device.name1=infiniti
+device.name2=OP60FFL1
 '; }
 
 block=boot
